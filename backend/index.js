@@ -109,7 +109,7 @@ async function optimizerAgent(
   });
 
   const completion = await openai.chat.completions.create({
-    model: "gpt-4.1",
+    model: "gpt-4o",
     messages: [{ role: "user", content: prompt }],
     response_format: { type: "json_object" },
   });
@@ -131,7 +131,7 @@ async function verifierAgent(optimizedProduct, medicationsAllergies) {
   const prompt = verifierPrompt({ optimizedProduct, medicationsAllergies });
 
   const completion = await openai.chat.completions.create({
-    model: "gpt-4.1",
+    model: "gpt-4o",
     messages: [{ role: "user", content: prompt }],
     response_format: { type: "json_object" },
   });
@@ -151,7 +151,7 @@ app.post("/api/recommend", async (req, res) => {
     // 1. Supervisor 분석
     const supPrompt = supervisorPrompt(userInput);
     const completion = await openai.chat.completions.create({
-      model: "gpt-4.1",
+      model: "gpt-4o",
       messages: [{ role: "user", content: supPrompt }],
       response_format: { type: "json_object" },
     });
