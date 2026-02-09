@@ -178,8 +178,11 @@ app.post("/api/recommend", async (req, res) => {
     console.log("Bossman says: searching for keywords in parallel, kinda...");
     const searchKeywords = analysis.search_keywords.slice(0, 3);
 
-    const searchPromises = searchKeywords.map((kw) => searchAgent(kw));
-    const searchResults = await Promise.all(searchPromises);
+    const searchResults = [];
+    for (const kw of searchKeywords) {
+      const result = await searchAgent(kw);
+      searchResults.push(result);
+    }
     const allProducts = searchResults.flat();
 
     // 3. Optimizer 실행
