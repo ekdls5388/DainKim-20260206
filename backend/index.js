@@ -1,7 +1,10 @@
 require("dotenv").config();
-const puppeteer = require("puppeteer-extra");
+const puppeteer = require("puppeteer-core");
+const chromium = require("@sparticuz/chromium");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
-puppeteer.use(StealthPlugin());
+const { addExtra } = require("puppeteer-extra");
+const puppeteerExtra = addExtra(puppeteer);
+puppeteerExtra.use(StealthPlugin());
 const express = require("express");
 const cors = require("cors");
 const OpenAI = require("openai");
@@ -24,14 +27,17 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 async function searchAgent(ingredient) {
   console.log(`Search guy says: diving into iHerb for '${ingredient}'...`);
 
-  const browser = await puppeteer.launch({
-    headless: "new",
+  const browser = await puppeteerExtra.launch({
     args: [
+      ...chromium.args,
       "--no-sandbox",
       "--disable-setuid-sandbox",
       "--disable-dev-shm-usage",
       "--disable-gpu",
     ],
+    defaultViewport: chromium.defaultViewport,
+    executablePath: await chromium.executablePath(),
+    headless: chromium.headless,
   });
 
   const page = await browser.newPage();
